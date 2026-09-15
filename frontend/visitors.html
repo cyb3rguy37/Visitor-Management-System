@@ -118,7 +118,7 @@
 
             for (const visit of visits){
                 const row = document.createElement("tr");
-                const checkInTime = new Date(visit.check_in_time).toLocaleString();
+                const checkInTime = formatKenyaTime(visit.check_in_time);
                 const idInfo = visit.visitor_id_type
                     ?`${visit.visitor_id_type}: ${visit.visitor_id_number || ""}`
                     : "N/A";

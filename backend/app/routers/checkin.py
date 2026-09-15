@@ -13,6 +13,7 @@ from app.schemas.visitor import CheckInRequest, CheckOutRequest, VisitRecordResp
 from app.services.audit import log_action
 
 from app.services.encryption import decrypt_field
+from app.services.masking import mask_id_number, mask_phone
 
 
 router = APIRouter()
@@ -75,17 +76,6 @@ async def check_out_visitor(
     return visit_record
 
 
-#helper function to mask ID basde on rol
-def mask_id_number(id_number, role):
-    if not id_number:
-        return None
-    if role=="admin":
-        return id_number
-    elif role=="manager":
-        return "*" * (len(id_number)-4)+ id_number[-4:]
-    else:
-        return "********"
-
 #list active visitors with full info
 @router.get("/active")
 async def get_active_visits(
@@ -116,7 +106,7 @@ async def get_active_visits(
             "notes": visit.notes,
             "visitor_name": visitor.full_name if visitor else "Unknown",
             "visitor_email": visitor.email if visitor else "",
-            "visitor_phone": decrypt_field(visitor.phone) if visitor else "",
+            "visitor_phone": mask_phone(decrypt_field(visitor.phone), current_user.role) if visitor else "",
             "visitor_id_type": visitor.id_type if visitor else None,
             "visitor_id_number": mask_id_number(
                 decrypt_field(visitor.id_number), current_user.role

@@ -93,3 +93,16 @@ function applyRoleVisibility(){
         if(usersLink) usersLink.parentElement.style.display = "none";
     }
 }
+
+
+//format a UTC timestamp from the api as kenyan time (EAT, UTC+3)
+function formatKenyaTime(utcString){
+    if(!utcString) return "";
+    //the api sends naive utc timestamps, so mark them as utc (append Z) if no timezone is present
+    const iso = (utcString.endsWith("Z") || utcString.includes("+")) ? utcString : utcString + "Z";
+    return new Date(iso).toLocaleString("en-KE", {
+        timeZone: "Africa/Nairobi",
+        dateStyle: "medium",
+        timeStyle: "short",
+    });
+}

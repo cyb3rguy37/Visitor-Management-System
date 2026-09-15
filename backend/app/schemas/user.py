@@ -2,15 +2,21 @@
 
 from datetime import datetime
 from typing import Optional
+from enum import Enum
 
 from pydantic import BaseModel, EmailStr
+
+class Role(str, Enum):
+    admin="admin"
+    manager= "manager"
+    guard="guard"
 
 class UserCreate(BaseModel):
     username: str
     email: EmailStr
     password: str
     full_name: str
-    role: str
+    role: Role
 
 class UserResponse(BaseModel):
     id: int
